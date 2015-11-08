@@ -24,6 +24,7 @@ class BasicBufferMgr {
     * is called first.
     * @param numbuffs the number of buffer slots to allocate
     */
+   //TODO: change the implementation in the childclass.
    BasicBufferMgr(int numbuffs) {
       bufferpool = new Buffer[numbuffs];
       numAvailable = numbuffs;
@@ -100,7 +101,8 @@ class BasicBufferMgr {
    int available() {
       return numAvailable;
    }
-   
+ 
+   //TODO: need to add a new IMPL here.
    private Buffer findExistingBuffer(Block blk) {
       for (Buffer buff : bufferpool) {
          Block b = buff.block();
@@ -109,7 +111,7 @@ class BasicBufferMgr {
       }
       return null;
    }
-   
+   //TODO: need to add a new IMPL here.
    private Buffer chooseUnpinnedBuffer() {
       for (Buffer buff : bufferpool)
          if (!buff.isPinned())

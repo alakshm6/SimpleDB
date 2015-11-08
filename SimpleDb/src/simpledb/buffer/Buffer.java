@@ -129,6 +129,7 @@ public class Buffer {
    /**
     * Increases the buffer's pin count.
     */
+   //Add the pinned Buffers to a HashSet
    void pin() {
       pins++;
    }
@@ -136,6 +137,7 @@ public class Buffer {
    /**
     * Decreases the buffer's pin count.
     */
+   //TODO: add the unpinned Buffers to a HashSet
    void unpin() {
       pins--;
    }
