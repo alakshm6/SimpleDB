@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 
-import simpledb.file.*;
+import simpledb.file.Block;
+import simpledb.file.FileMgr;
 
 /**
  * Manages the pinning and unpinning of buffers to blocks.
@@ -15,9 +16,27 @@ import simpledb.file.*;
 class BasicBufferMgr {
   private Buffer[] bufferpool;
   protected int numAvailable;
+  /*
+   * A map which contains a mapping between the BLOCK and the BUFFER assigned to it. BLOCK ->
+   * BUFFER.
+   * 
+   * @see MRMBufferMgr
+   */
   private HashMap<Block, Buffer> bufferPoolMap = new HashMap<Block, Buffer>();
+  /*
+   * A set of unpinned buffers. Useful to optimize the method {@link
+   * BasicBufferMgr#chooseUnpinnedBuffer() chooseUnpinnedBuffer}
+   * 
+   * @see Buffer
+   */
   private HashSet<Buffer> unpinnedBuffers = new HashSet<>();
+
+  /*
+   * A useless map, at least, so far. Added it to complement {@link BasicBufferMgr#unpinnedBuffers
+   * unpinnedBuffers}. I was hoping this might come in handy, in case the requirements change.
+   */
   private HashSet<Buffer> pinnedBuffers = new HashSet<>();
+  
   private TreeMap<Integer, Buffer> lsnMap = new TreeMap<>();
 
 
