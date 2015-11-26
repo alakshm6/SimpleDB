@@ -126,9 +126,8 @@ public class Buffer {
    * Increases the buffer's pin count.
    */
   // TODO: Add the pinned Buffers to a HashSet - done
-  void pin() {
+  void pin() {    
     pins++;
-    //bufferMgr.getpinnedBuffers().add(this);
   }
 
   /**
@@ -137,13 +136,9 @@ public class Buffer {
   // TODO: add the unpinned Buffers to a HashSet - done
   void unpin() {
     pins--;
-    if (isPinned() == false) {
-
-      //bufferMgr.getUnpinnedBuffers().add(this);
-      if (this.block() != null) {
-        bufferMgr.getBufferPoolMap().remove(this.block());
-      }
-
+    if (!isPinned()) {
+      bufferMgr.getLsnMap().put(logSequenceNumber, this);
+      // bufferMgr.getBufferPoolMap().remove(block());
     }
   }
 
@@ -174,14 +169,10 @@ public class Buffer {
    * @param b a reference to the data block
    */
   void assignToBlock(Block b) {
-    if (block() != null) {
-      bufferMgr.getBufferPoolMap().remove(block());
-    }
     flush();
     blk = b;
     contents.read(blk);
     pins = 0;
-    bufferMgr.getBufferPoolMap().put(b, this);
   }
 
   /**
@@ -193,14 +184,12 @@ public class Buffer {
    * @param fmtr a page formatter, used to initialize the page
    */
   void assignToNew(String filename, PageFormatter fmtr) {
-    if (block() != null) {
-      bufferMgr.getBufferPoolMap().remove(block());
-    }
+
     flush();
     fmtr.format(contents);
     blk = contents.append(filename);
     pins = 0;
-    bufferMgr.getBufferPoolMap().put(blk, this);
+
   }
 
   @Override

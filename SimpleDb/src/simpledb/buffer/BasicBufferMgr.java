@@ -1,7 +1,6 @@
 package simpledb.buffer;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.TreeMap;
 
 import simpledb.file.Block;
@@ -23,20 +22,7 @@ class BasicBufferMgr {
    * @see MRMBufferMgr
    */
   private HashMap<Block, Buffer> bufferPoolMap = new HashMap<Block, Buffer>();
-  /*
-   * A set of unpinned buffers. Useful to optimize the method {@link
-   * BasicBufferMgr#chooseUnpinnedBuffer() chooseUnpinnedBuffer}
-   * Currently no in use.
-   * @see Buffer
-   */
-  private HashSet<Buffer> unpinnedBuffers = new HashSet<>();
 
-  /*
-   * A useless map, at least, so far. Added it to complement {@link BasicBufferMgr#unpinnedBuffers
-   * unpinnedBuffers}. I was hoping this might come in handy, in case the requirements change.
-   */
-  private HashSet<Buffer> pinnedBuffers = new HashSet<>();
-  
   private TreeMap<Integer, Buffer> lsnMap = new TreeMap<>();
 
 
@@ -55,7 +41,7 @@ class BasicBufferMgr {
     numAvailable = numbuffs;
     for (int i = 0; i < numbuffs; i++) {
       bufferpool[i] = new Buffer(this, i);
-      unpinnedBuffers.add(bufferpool[i]);
+      lsnMap.put(-1, bufferpool[i]);
     }
   }
 
@@ -152,13 +138,6 @@ class BasicBufferMgr {
     return bufferPoolMap;
   }
 
-  public HashSet<Buffer> getUnpinnedBuffers() {
-    return unpinnedBuffers;
-  }
-
-  public HashSet<Buffer> getpinnedBuffers() {
-    return pinnedBuffers;
-  }
 
   public TreeMap<Integer, Buffer> getLsnMap() {
     return lsnMap;
