@@ -1,7 +1,7 @@
 package simpledb.buffer;
 
-import simpledb.buffer.BufferManagerFactory.BufferManagerType;
-import simpledb.file.*;
+import simpledb.file.Block;
+import simpledb.file.FileMgr;
 
 /**
  * The publicly-accessible buffer manager.

@@ -128,7 +128,7 @@ public class Buffer {
   // TODO: Add the pinned Buffers to a HashSet - done
   void pin() {
     pins++;
-    bufferMgr.getpinnedBuffers().add(this);
+    //bufferMgr.getpinnedBuffers().add(this);
   }
 
   /**
@@ -137,9 +137,9 @@ public class Buffer {
   // TODO: add the unpinned Buffers to a HashSet - done
   void unpin() {
     pins--;
-    if (isPinned()) {
+    if (isPinned() == false) {
 
-      bufferMgr.getUnpinnedBuffers().add(this);
+      //bufferMgr.getUnpinnedBuffers().add(this);
       if (this.block() != null) {
         bufferMgr.getBufferPoolMap().remove(this.block());
       }

@@ -5,9 +5,9 @@ import java.util.Map;
 
 import simpledb.file.Block;
 
-public class MRMBufferMgr extends BasicBufferMgr {
+public class LRUBufferMgr extends BasicBufferMgr {
 
-  MRMBufferMgr(int numbuffs) {
+  LRUBufferMgr(int numbuffs) {
     super(numbuffs);
   }
 

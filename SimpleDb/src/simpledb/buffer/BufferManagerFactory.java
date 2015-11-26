@@ -10,7 +10,7 @@ public class BufferManagerFactory {
       case BASIC:
         return new BasicBufferMgr(numbuffs);
       case MRM:
-        return new MRMBufferMgr(numbuffs);
+        return new LRUBufferMgr(numbuffs);
         
         default:
           //TODO: Throw an exception

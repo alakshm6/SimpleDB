@@ -26,7 +26,7 @@ class BasicBufferMgr {
   /*
    * A set of unpinned buffers. Useful to optimize the method {@link
    * BasicBufferMgr#chooseUnpinnedBuffer() chooseUnpinnedBuffer}
-   * 
+   * Currently no in use.
    * @see Buffer
    */
   private HashSet<Buffer> unpinnedBuffers = new HashSet<>();
