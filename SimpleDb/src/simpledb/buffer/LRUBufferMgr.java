@@ -5,7 +5,7 @@ import java.util.TreeMap;
 
 import simpledb.file.Block;
 
-public class LRUBufferMgr extends BasicBufferMgr {
+public class LRUBufferMgr extends BasicBufferMgr{
 
   LRUBufferMgr(int numbuffs) {
     super(numbuffs);
@@ -17,6 +17,7 @@ public class LRUBufferMgr extends BasicBufferMgr {
     if (buff == null) {
       buff = chooseUnpinnedBuffer();
       if (buff == null) {
+    	  // Might need to implement waiting time for unpinning
         return null;
       }
       getBufferPoolMap().remove(buff.block());
@@ -27,6 +28,7 @@ public class LRUBufferMgr extends BasicBufferMgr {
       numAvailable--;
     }
     buff.pin();
+    
     return buff;
   }
 
@@ -42,6 +44,10 @@ public class LRUBufferMgr extends BasicBufferMgr {
 
   @Override
   protected Buffer chooseUnpinnedBuffer() {
+	  // Might have to implement case when there is empty space in the bufferpool
+	  // The current implementation is checking for only the least positive lsn.
+	  // What if there is nothing in the buffer pool or there is further space.
+	  // in that case replacement would not be required also. we can just allocate newly
     TreeMap<Integer, Buffer> map = getLsnMap();
     int retLSN = Integer.MIN_VALUE;
 
@@ -54,4 +60,5 @@ public class LRUBufferMgr extends BasicBufferMgr {
     getLsnMap().remove(retLSN);
     return retBuf;
   }
+  
 }

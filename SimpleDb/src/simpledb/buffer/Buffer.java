@@ -11,7 +11,7 @@ import simpledb.file.*;
  * 
  * @author Edward Sciore
  */
-public class Buffer {
+public class Buffer implements IStatistics {
   private Page contents = new Page();
   private Block blk = null;
   private int pins = 0;
@@ -19,6 +19,7 @@ public class Buffer {
   private int logSequenceNumber = -1; // negative means no corresponding log record
   private BasicBufferMgr bufferMgr = null;
   private int BUFFER_ID = 0;
+  private int writes = 0; // Maintains number of times a buffer has been flushed/written to disk
 
   /**
    * Creates a new buffer, wrapping a new {@link simpledb.file.Page page}. This constructor is
@@ -118,6 +119,9 @@ public class Buffer {
       SimpleDB.logMgr().flush(logSequenceNumber);
       contents.write(blk);
       modifiedBy = -1;
+      writes++;
+      stats.add("[" + BUFFER_ID + "]" + " Writing block " + blk.number() + " to disk");
+      stats.add("[" + BUFFER_ID + "]" + " Number of writes : " + writes);
       // TODO: Task3 can go here.
     }
   }
@@ -128,6 +132,7 @@ public class Buffer {
   // TODO: Add the pinned Buffers to a HashSet - done
   void pin() {    
     pins++;
+    stats.add("[" + BUFFER_ID + "]" + " Number of reads : " + pins);
   }
 
   /**
@@ -140,6 +145,7 @@ public class Buffer {
       bufferMgr.getLsnMap().put(logSequenceNumber, this);
       // bufferMgr.getBufferPoolMap().remove(block());
     }
+    stats.add("[" + BUFFER_ID + "]" + " Number of reads : " + pins);
   }
 
   /**
@@ -173,6 +179,7 @@ public class Buffer {
     blk = b;
     contents.read(blk);
     pins = 0;
+    stats.add("[" + BUFFER_ID + "]" + "Read block "  + blk.number() + " from disk");
   }
 
   /**
@@ -189,7 +196,7 @@ public class Buffer {
     fmtr.format(contents);
     blk = contents.append(filename);
     pins = 0;
-
+    stats.add("[" + BUFFER_ID + "]" + "Read block "  + blk.number() + " from disk");
   }
 
   @Override
@@ -198,4 +205,11 @@ public class Buffer {
     str.append(BUFFER_ID);
     return str.toString();
   }
+
+@Override
+public void getStatistics() {
+	for(String stat : stats) {
+		System.out.println(stat);
+	}
+}
 }

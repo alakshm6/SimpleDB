@@ -5,7 +5,7 @@ public class BufferManagerFactory {
     BASIC,MRM
   }
 
-  static BasicBufferMgr getInstnace(BufferManagerType type, int numbuffs) {
+  static BasicBufferMgr getInstance(BufferManagerType type, int numbuffs) {
     switch(type){
       case BASIC:
         return new BasicBufferMgr(numbuffs);

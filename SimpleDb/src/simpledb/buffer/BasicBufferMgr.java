@@ -12,7 +12,7 @@ import simpledb.file.FileMgr;
  * @author Edward Sciore
  * 
  */
-class BasicBufferMgr {
+class BasicBufferMgr implements IStatistics{
   private Buffer[] bufferpool;
   protected int numAvailable;
   /*
@@ -142,5 +142,12 @@ class BasicBufferMgr {
   public TreeMap<Integer, Buffer> getLsnMap() {
     return lsnMap;
   }
+
+@Override
+public void getStatistics() {
+	for(Buffer buff : bufferpool){
+		buff.getStatistics();
+	}
+}
 
 }
