@@ -37,7 +37,7 @@ public class BufferMgr {
     * @param numbuffers the number of buffer slots to allocate
     */
    public BufferMgr(int numbuffers) {
-      bufferMgr = BufferManagerFactory.getInstance(BufferManagerFactory.BufferManagerType.BASIC, numbuffers);
+      bufferMgr = BufferManagerFactory.getInstance(BufferManagerFactory.BufferManagerType.LRU, numbuffers);
    }
    
    /**

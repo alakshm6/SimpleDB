@@ -5,7 +5,7 @@ import java.util.TreeMap;
 
 import simpledb.file.Block;
 
-public class LRUBufferMgr extends BasicBufferMgr{
+public class LRUBufferMgr extends BasicBufferMgr implements IStatistics{
 
   LRUBufferMgr(int numbuffs) {
     super(numbuffs);
@@ -13,22 +13,26 @@ public class LRUBufferMgr extends BasicBufferMgr{
 
   @Override
   synchronized Buffer pin(Block blk) {
+    getStatistics();
+    System.out.println("------------------------------------");
     Buffer buff = findExistingBuffer(blk);
     if (buff == null) {
       buff = chooseUnpinnedBuffer();
       if (buff == null) {
-    	  // Might need to implement waiting time for unpinning
         return null;
       }
-      getBufferPoolMap().remove(buff.block());
+      if (buff.block() != null) {
+        getBufferPoolMap().remove(buff.block());
+      }
       buff.assignToBlock(blk);
       getBufferPoolMap().put(blk, buff);
     }
+
     if (!buff.isPinned()) {
       numAvailable--;
     }
     buff.pin();
-    
+
     return buff;
   }
 
@@ -44,21 +48,19 @@ public class LRUBufferMgr extends BasicBufferMgr{
 
   @Override
   protected Buffer chooseUnpinnedBuffer() {
-	  // Might have to implement case when there is empty space in the bufferpool
-	  // The current implementation is checking for only the least positive lsn.
-	  // What if there is nothing in the buffer pool or there is further space.
-	  // in that case replacement would not be required also. we can just allocate newly
-    TreeMap<Integer, Buffer> map = getLsnMap();
-    int retLSN = Integer.MIN_VALUE;
 
+    TreeMap<Integer, Buffer> map = getLsnMap();
+    if (map.size() == 0) {
+      return null;
+    }
+    Buffer retBuf = null;
+    int retLsn = Integer.MIN_VALUE;
     for (Map.Entry<Integer, Buffer> entry : map.entrySet()) {
-      retLSN = entry.getKey();
+      retBuf = entry.getValue();
+      retLsn = entry.getKey();
       break;
     }
-
-    Buffer retBuf = getLsnMap().get(retLSN);
-    getLsnMap().remove(retLSN);
+    map.remove(retLsn);
     return retBuf;
   }
-  
 }

@@ -1,5 +1,6 @@
 package simpledb.buffer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -144,10 +145,12 @@ class BasicBufferMgr implements IStatistics{
   }
 
 @Override
-public void getStatistics() {
+public ArrayList<String> getStatistics() {
+  ArrayList<String> retList = new ArrayList<>();
 	for(Buffer buff : bufferpool){
-		buff.getStatistics();
+		retList.addAll(buff.getStatistics());
 	}
+	return retList;
 }
 
 }

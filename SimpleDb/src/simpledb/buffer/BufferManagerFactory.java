@@ -2,14 +2,14 @@ package simpledb.buffer;
 
 public class BufferManagerFactory {
   public static enum BufferManagerType {
-    BASIC,MRM
+    BASIC,LRU
   }
 
   static BasicBufferMgr getInstance(BufferManagerType type, int numbuffs) {
     switch(type){
       case BASIC:
         return new BasicBufferMgr(numbuffs);
-      case MRM:
+      case LRU:
         return new LRUBufferMgr(numbuffs);
         
         default:

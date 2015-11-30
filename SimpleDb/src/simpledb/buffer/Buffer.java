@@ -1,5 +1,7 @@
 package simpledb.buffer;
 
+import java.util.ArrayList;
+
 import simpledb.server.SimpleDB;
 import simpledb.file.*;
 
@@ -12,6 +14,8 @@ import simpledb.file.*;
  * @author Edward Sciore
  */
 public class Buffer implements IStatistics {
+  ArrayList<String> stats = new ArrayList<>();
+
   private Page contents = new Page();
   private Block blk = null;
   private int pins = 0;
@@ -129,8 +133,7 @@ public class Buffer implements IStatistics {
   /**
    * Increases the buffer's pin count.
    */
-  // TODO: Add the pinned Buffers to a HashSet - done
-  void pin() {    
+  void pin() {
     pins++;
     stats.add("[" + BUFFER_ID + "]" + " Number of reads : " + pins);
   }
@@ -138,12 +141,10 @@ public class Buffer implements IStatistics {
   /**
    * Decreases the buffer's pin count.
    */
-  // TODO: add the unpinned Buffers to a HashSet - done
   void unpin() {
     pins--;
     if (!isPinned()) {
       bufferMgr.getLsnMap().put(logSequenceNumber, this);
-      // bufferMgr.getBufferPoolMap().remove(block());
     }
     stats.add("[" + BUFFER_ID + "]" + " Number of reads : " + pins);
   }
@@ -155,7 +156,6 @@ public class Buffer implements IStatistics {
    */
   boolean isPinned() {
     return pins > 0;
-    // TODO: IMP Question: shouldn't this be pins > -1 refer to assignToBlock and assignToNew
   }
 
   /**
@@ -179,7 +179,7 @@ public class Buffer implements IStatistics {
     blk = b;
     contents.read(blk);
     pins = 0;
-    stats.add("[" + BUFFER_ID + "]" + "Read block "  + blk.number() + " from disk");
+    stats.add("[" + BUFFER_ID + "]" + "Read block " + blk.number() + " from disk");
   }
 
   /**
@@ -196,7 +196,7 @@ public class Buffer implements IStatistics {
     fmtr.format(contents);
     blk = contents.append(filename);
     pins = 0;
-    stats.add("[" + BUFFER_ID + "]" + "Read block "  + blk.number() + " from disk");
+    stats.add("[" + BUFFER_ID + "]" + "Read block " + blk.number() + " from disk");
   }
 
   @Override
@@ -206,10 +206,11 @@ public class Buffer implements IStatistics {
     return str.toString();
   }
 
-@Override
-public void getStatistics() {
-	for(String stat : stats) {
-		System.out.println(stat);
-	}
-}
+  @Override
+  public ArrayList<String> getStatistics() {
+    for (String stat : stats) {
+      System.out.println(stat);
+    }
+    return stats;
+  }
 }
