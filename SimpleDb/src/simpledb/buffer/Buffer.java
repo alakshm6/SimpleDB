@@ -3,6 +3,7 @@ package simpledb.buffer;
 import java.util.ArrayList;
 
 import simpledb.server.SimpleDB;
+import simpledb.buffer.IStatistics.Stats;
 import simpledb.file.*;
 
 /**
@@ -13,7 +14,7 @@ import simpledb.file.*;
  * 
  * @author Edward Sciore
  */
-public class Buffer implements IStatistics {
+public class Buffer {
   ArrayList<String> stats = new ArrayList<>();
 
   private Page contents = new Page();
@@ -24,6 +25,8 @@ public class Buffer implements IStatistics {
   private BasicBufferMgr bufferMgr = null;
   private int BUFFER_ID = 0;
   private int writes = 0; // Maintains number of times a buffer has been flushed/written to disk
+
+  private int totalFeches = 0;
 
   /**
    * Creates a new buffer, wrapping a new {@link simpledb.file.Page page}. This constructor is
@@ -124,8 +127,8 @@ public class Buffer implements IStatistics {
       contents.write(blk);
       modifiedBy = -1;
       writes++;
-      stats.add("[" + BUFFER_ID + "]" + " Writing block " + blk.number() + " to disk");
-      stats.add("[" + BUFFER_ID + "]" + " Number of writes : " + writes);
+      // stats.add("[" + BUFFER_ID + "]" + " Writing block " + blk.number() + " to disk");
+      // stats.add("[" + BUFFER_ID + "]" + " Number of writes : " + writes);
       // TODO: Task3 can go here.
     }
   }
@@ -135,7 +138,8 @@ public class Buffer implements IStatistics {
    */
   void pin() {
     pins++;
-    stats.add("[" + BUFFER_ID + "]" + " Number of reads : " + pins);
+    // stats.add("[" + BUFFER_ID + "]" + " Number of reads : " + pins);
+    totalFeches++;
   }
 
   /**
@@ -146,7 +150,7 @@ public class Buffer implements IStatistics {
     if (!isPinned()) {
       bufferMgr.getLsnMap().put(logSequenceNumber, this);
     }
-    stats.add("[" + BUFFER_ID + "]" + " Number of reads : " + pins);
+    // stats.add("[" + BUFFER_ID + "]" + " Number of reads : " + pins);
   }
 
   /**
@@ -179,7 +183,7 @@ public class Buffer implements IStatistics {
     blk = b;
     contents.read(blk);
     pins = 0;
-    stats.add("[" + BUFFER_ID + "]" + "Read block " + blk.number() + " from disk");
+    // stats.add("[" + BUFFER_ID + "]" + "Read block " + blk.number() + " from disk");
   }
 
   /**
@@ -196,7 +200,7 @@ public class Buffer implements IStatistics {
     fmtr.format(contents);
     blk = contents.append(filename);
     pins = 0;
-    stats.add("[" + BUFFER_ID + "]" + "Read block " + blk.number() + " from disk");
+    // stats.add("[" + BUFFER_ID + "]" + "Read block " + blk.number() + " from disk");
   }
 
   @Override
@@ -206,11 +210,12 @@ public class Buffer implements IStatistics {
     return str.toString();
   }
 
-  @Override
-  public ArrayList<String> getStatistics() {
-    for (String stat : stats) {
-      System.out.println(stat);
-    }
-    return stats;
+  public Stats getStatistics() {
+    System.out.println("======================");
+    System.out.println("BUFFER_ID :"+BUFFER_ID);
+    System.out.println("WRITES :"+writes);
+    System.out.println("TOTAL-FETCHES :"+totalFeches);
+    System.out.println("======================");
+    return new Stats(writes, totalFeches, BUFFER_ID);
   }
 }

@@ -13,8 +13,10 @@ public class LRUBufferMgr extends BasicBufferMgr implements IStatistics{
 
   @Override
   synchronized Buffer pin(Block blk) {
-    getStatistics();
-    System.out.println("------------------------------------");
+    //TODO: this line needs to be deleted.
+    //getStatistics();
+    
+    //System.out.println("------------------------------------");
     Buffer buff = findExistingBuffer(blk);
     if (buff == null) {
       buff = chooseUnpinnedBuffer();

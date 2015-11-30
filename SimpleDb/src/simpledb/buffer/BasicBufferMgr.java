@@ -13,7 +13,7 @@ import simpledb.file.FileMgr;
  * @author Edward Sciore
  * 
  */
-class BasicBufferMgr implements IStatistics{
+class BasicBufferMgr implements IStatistics {
   private Buffer[] bufferpool;
   protected int numAvailable;
   /*
@@ -42,7 +42,7 @@ class BasicBufferMgr implements IStatistics{
     numAvailable = numbuffs;
     for (int i = 0; i < numbuffs; i++) {
       bufferpool[i] = new Buffer(this, i);
-      lsnMap.put(-1, bufferpool[i]);
+      lsnMap.put(-1 * i, bufferpool[i]);
     }
   }
 
@@ -144,13 +144,13 @@ class BasicBufferMgr implements IStatistics{
     return lsnMap;
   }
 
-@Override
-public ArrayList<String> getStatistics() {
-  ArrayList<String> retList = new ArrayList<>();
-	for(Buffer buff : bufferpool){
-		retList.addAll(buff.getStatistics());
-	}
-	return retList;
-}
+  @Override
+  public ArrayList<Stats> getStatistics() {
+    ArrayList<Stats> retList = new ArrayList<>();
+    for (Buffer buff : bufferpool) {
+      retList.add(buff.getStatistics());
+    }
+    return retList;
+  }
 
 }

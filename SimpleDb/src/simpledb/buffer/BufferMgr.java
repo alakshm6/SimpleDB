@@ -1,5 +1,7 @@
 package simpledb.buffer;
 
+import java.util.ArrayList;
+
 import simpledb.file.Block;
 import simpledb.file.FileMgr;
 
@@ -19,7 +21,7 @@ import simpledb.file.FileMgr;
  * then a {@link BufferAbortException} is thrown.
  * @author Edward Sciore
  */
-public class BufferMgr {
+public class BufferMgr implements IStatistics{
    private static final long MAX_TIME = 10000; // 10 seconds
    private BasicBufferMgr bufferMgr;
    
@@ -122,4 +124,9 @@ public class BufferMgr {
    private boolean waitingTooLong(long starttime) {
       return System.currentTimeMillis() - starttime > MAX_TIME;
    }
+
+  @Override
+  public ArrayList<Stats> getStatistics() {
+    return bufferMgr.getStatistics();
+  }
 }
