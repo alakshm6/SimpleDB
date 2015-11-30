@@ -5,7 +5,7 @@ import java.util.TreeMap;
 
 import simpledb.file.Block;
 
-public class LRUBufferMgr extends BasicBufferMgr implements IStatistics{
+public class LRUBufferMgr extends BasicBufferMgr implements IStatistics {
 
   LRUBufferMgr(int numbuffs) {
     super(numbuffs);
@@ -13,10 +13,10 @@ public class LRUBufferMgr extends BasicBufferMgr implements IStatistics{
 
   @Override
   synchronized Buffer pin(Block blk) {
-    //TODO: this line needs to be deleted.
-    //getStatistics();
-    
-    //System.out.println("------------------------------------");
+    // TODO: this line needs to be deleted.
+    // getStatistics();
+
+    // System.out.println("------------------------------------");
     Buffer buff = findExistingBuffer(blk);
     if (buff == null) {
       buff = chooseUnpinnedBuffer();
@@ -64,5 +64,21 @@ public class LRUBufferMgr extends BasicBufferMgr implements IStatistics{
     }
     map.remove(retLsn);
     return retBuf;
+  }
+
+  @Override
+  synchronized Buffer pinNew(String filename, PageFormatter fmtr) {
+    Buffer buff = chooseUnpinnedBuffer();
+    if (buff == null) {
+      return null;
+    }
+    if (buff.block() != null) {
+      getBufferPoolMap().remove(buff.block());
+    }
+    
+    buff.assignToNew(filename, fmtr);
+    numAvailable--;
+    buff.pin();
+    return buff;
   }
 }

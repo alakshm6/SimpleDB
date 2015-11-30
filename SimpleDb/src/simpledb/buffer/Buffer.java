@@ -15,7 +15,7 @@ import simpledb.file.*;
  * @author Edward Sciore
  */
 public class Buffer {
-  ArrayList<String> stats = new ArrayList<>();
+  //ArrayList<String> stats = new ArrayList<>();
 
   private Page contents = new Page();
   private Block blk = null;
@@ -200,6 +200,8 @@ public class Buffer {
     fmtr.format(contents);
     blk = contents.append(filename);
     pins = 0;
+    bufferMgr.getBufferPoolMap().put(blk, this);
+    
     // stats.add("[" + BUFFER_ID + "]" + "Read block " + blk.number() + " from disk");
   }
 
@@ -216,6 +218,7 @@ public class Buffer {
     System.out.println("WRITES :"+writes);
     System.out.println("TOTAL-FETCHES :"+totalFeches);
     System.out.println("======================");
-    return new Stats(writes, totalFeches, BUFFER_ID);
+    return null;
+    //return new Stats(writes, totalFeches, BUFFER_ID);
   }
 }
